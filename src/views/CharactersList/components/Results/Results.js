@@ -18,6 +18,7 @@ import {
 } from '@material-ui/core';
 import { GenericMoreButton } from 'components';
 import axios from 'utils/axios';
+import useRouter from 'utils/useRouter';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -46,6 +47,7 @@ const Results = props => {
   const { className, characters, ...rest } = props;
 
   const classes = useStyles();
+  const { history } = useRouter();
 
   const [people, setPeople] = useState([]);
   const [page, setPage] = useState(0); 
@@ -108,9 +110,11 @@ const Results = props => {
                 </TableHead>
                 <TableBody>
                   {people.map((person, key) => (
-                    <TableRow
+                    <TableRow                      
                       hover
                       key={key}
+                      onClick={() => history.push('/person' + person.url.split('people')[1] + 'summary')}
+                      style={{cursor: 'pointer'}}
                     >                      
                       <TableCell>{person.name}</TableCell>
                       <TableCell>{person.mass} {' kilograms'}</TableCell>

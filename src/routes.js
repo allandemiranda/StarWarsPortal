@@ -75,6 +75,12 @@ const routes = [
         component: lazy(()=> import('views/CharactersList'))
       },
       {
+        path: '/starships',
+        exact: true,
+        component: lazy(()=> import('views/StarshipsList'))
+      },
+
+      {
         path: '/calendar',
         exact: true,
         component: lazy(() => import('views/Calendar'))

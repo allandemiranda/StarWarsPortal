@@ -14,7 +14,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-
+import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
 import { GenericMoreButton } from 'components';
 
@@ -29,6 +29,8 @@ const Films = props => {
   const { className, data, title, ...rest } = props;
 
   const classes = useStyles();
+  const { history } = useRouter();
+
   const [films, setFilms] = useState([]);
 
   useEffect(async () => {
@@ -76,7 +78,12 @@ const Films = props => {
                 </TableHead>
                 <TableBody>
                   {films.map((film, key) => (
-                    <TableRow key={key}>
+                    <TableRow 
+                      hover
+                      key={key}
+                      onClick={() => history.push('/film' + film.data.url.split('films')[1] + 'summary')}
+                      style={{cursor: 'pointer'}}
+                    >
                       <TableCell>{film.data.title}</TableCell>
                       <TableCell>{film.data.director}</TableCell>
                       <TableCell>{film.data.producer}</TableCell>

@@ -67,7 +67,7 @@ const PersonInfo = props => {
       {homeworld && <CardContent className={classes.content}>
         <Table>
           <TableBody>            
-            <TableRow selected>
+            <TableRow selected >
               <TableCell>Birthday</TableCell>
               <TableCell>{person.birth_year}</TableCell>
             </TableRow>

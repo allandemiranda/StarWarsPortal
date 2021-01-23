@@ -14,7 +14,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-
+import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
 import { GenericMoreButton } from 'components';
 
@@ -29,6 +29,8 @@ const Starships = props => {
   const { className, data, title, ...rest } = props;
 
   const classes = useStyles();
+  const { history } = useRouter();
+
   const [starships, setStarships] = useState([]);
 
   useEffect(async () => {
@@ -77,7 +79,12 @@ const Starships = props => {
                 </TableHead>
                 <TableBody>
                   {starships.map((starship, key) => (
-                    <TableRow key={key}>
+                    <TableRow 
+                      hover
+                      key={key}
+                      onClick={() => history.push('/starship' + starship.data.url.split('starships')[1] + 'summary')}
+                      style={{cursor: 'pointer'}}
+                    >
                       <TableCell>{starship.data.name}</TableCell>
                       <TableCell>{starship.data.model}</TableCell>
                       <TableCell>{starship.data.manufacturer}</TableCell>

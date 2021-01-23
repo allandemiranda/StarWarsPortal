@@ -4,7 +4,15 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Tabs, Tab, Divider, colors } from '@material-ui/core';
 import axios from 'utils/axios';
-import { Page, Header, Summary, Films } from 'components';
+import { 
+  Page, 
+  Header, 
+  Summary, 
+  Films, 
+  Species, 
+  Starships,
+  Vehicles 
+} from 'components';
 import { PersonInfo } from './components';
 
 const useStyles = makeStyles(theme => ({
@@ -33,7 +41,10 @@ const Person = props => {
 
   const tabs = [
     { value: 'summary', label: 'Summary' },
-    { value: 'films', label: 'Films' }
+    { value: 'films', label: 'Films' },
+    { value: 'species', label: 'Species'},
+    { value: 'starships', label: 'Starships'},
+    { value: 'vehicles', label: 'Vehicles'}
   ];
 
   if (!tab) {
@@ -102,6 +113,21 @@ const Person = props => {
         <Films 
           data={person} 
           title={'Person Films'} 
+        />}
+        {tab === 'species' && 
+        <Species 
+          data={person} 
+          title={'Person Species'} 
+        />}
+        {tab === 'starships' && 
+        <Starships 
+          data={person} 
+          title={'Person Starships'} 
+        />}
+        {tab === 'vehicles' && 
+        <Vehicles 
+          data={person} 
+          title={'Person Vehicles'} 
         />}
       </div>
     </Page>

@@ -1,37 +1,17 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import {
   AppBar,
-  Badge,
-  Button,
   IconButton,
   Toolbar,
   Hidden,
-  Input,
-  colors,
-  Popper,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ClickAwayListener
+  colors
 } from '@material-ui/core';
-import LockIcon from '@material-ui/icons/LockOutlined';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 
-import axios from 'utils/axios';
-import useRouter from 'utils/useRouter';
-import { PricingModal, NotificationsPopover } from 'components';
-import { logout } from 'actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -96,78 +76,6 @@ const TopBar = props => {
   const { onOpenNavBarMobile, className, ...rest } = props;
 
   const classes = useStyles();
-  const { history } = useRouter();
-  const searchRef = useRef(null);
-  const dispatch = useDispatch();
-  const notificationsRef = useRef(null);
-  const [pricingModalOpen, setPricingModalOpen] = useState(false);
-  const [openSearchPopover, setOpenSearchPopover] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const [notifications, setNotifications] = useState([]);
-  const [openNotifications, setOpenNotifications] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const fetchNotifications = () => {
-      axios.get('/api/account/notifications').then(response => {
-        if (mounted) {
-          setNotifications(response.data.notifications);
-        }
-      });
-    };
-
-    fetchNotifications();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  const handleLogout = () => {
-    history.push('/auth/login');
-    // dispatch(logout());
-  };
-
-  const handlePricingOpen = () => {
-    setPricingModalOpen(true);
-  };
-
-  const handlePricingClose = () => {
-    setPricingModalOpen(false);
-  };
-
-  const handleNotificationsOpen = () => {
-    setOpenNotifications(true);
-  };
-
-  const handleNotificationsClose = () => {
-    setOpenNotifications(false);
-  };
-
-  const handleSearchChange = event => {
-    setSearchValue(event.target.value);
-
-    if (event.target.value) {
-      if (!openSearchPopover) {
-        setOpenSearchPopover(true);
-      }
-    } else {
-      setOpenSearchPopover(false);
-    }
-  };
-
-  const handleSearchPopverClose = () => {
-    setOpenSearchPopover(false);
-  };
-
-  const popularSearches = [
-    'Devias React Dashboard',
-    'Devias',
-    'Admin Pannel',
-    'Project',
-    'Pages'
-  ];
 
   return (
     <AppBar
@@ -182,82 +90,7 @@ const TopBar = props => {
             src="/images/logos/logo--white.svg"
           />
         </RouterLink>
-        <div className={classes.flexGrow} />
-        <Hidden smDown>
-          <div
-            className={classes.search}
-            ref={searchRef}
-          >
-            <SearchIcon className={classes.searchIcon} />
-            <Input
-              className={classes.searchInput}
-              disableUnderline
-              onChange={handleSearchChange}
-              placeholder="Search people &amp; places"
-              value={searchValue}
-            />
-          </div>
-          <Popper
-            anchorEl={searchRef.current}
-            className={classes.searchPopper}
-            open={openSearchPopover}
-            transition
-          >
-            <ClickAwayListener onClickAway={handleSearchPopverClose}>
-              <Paper
-                className={classes.searchPopperContent}
-                elevation={3}
-              >
-                <List>
-                  {popularSearches.map(search => (
-                    <ListItem
-                      button
-                      key={search}
-                      onClick={handleSearchPopverClose}
-                    >
-                      <ListItemIcon>
-                        <SearchIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={search} />
-                    </ListItem>
-                  ))}
-                </List>
-              </Paper>
-            </ClickAwayListener>
-          </Popper>
-          <Button
-            className={classes.trialButton}
-            onClick={handlePricingOpen}
-            variant="contained"
-          >
-            <LockIcon className={classes.trialIcon} />
-            Trial expired
-          </Button>
-        </Hidden>
-        <Hidden mdDown>
-          <IconButton
-            className={classes.notificationsButton}
-            color="inherit"
-            onClick={handleNotificationsOpen}
-            ref={notificationsRef}
-          >
-            <Badge
-              badgeContent={notifications.length}
-              classes={{ badge: classes.notificationsBadge }}
-              variant="dot"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <Button
-            className={classes.logoutButton}
-            color="inherit"
-            onClick={handleLogout}
-          >
-            <InputIcon className={classes.logoutIcon} />
-            Sign out
-          </Button>
-        </Hidden>
+        <div className={classes.flexGrow} />               
         <Hidden lgUp>
           <IconButton
             color="inherit"
@@ -266,17 +99,7 @@ const TopBar = props => {
             <MenuIcon />
           </IconButton>
         </Hidden>
-      </Toolbar>
-      <PricingModal
-        onClose={handlePricingClose}
-        open={pricingModalOpen}
-      />
-      <NotificationsPopover
-        anchorEl={notificationsRef.current}
-        notifications={notifications}
-        onClose={handleNotificationsClose}
-        open={openNotifications}
-      />
+      </Toolbar>      
     </AppBar>
   );
 };

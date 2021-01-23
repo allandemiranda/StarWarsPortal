@@ -14,7 +14,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-
+import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
 import { GenericMoreButton } from 'components';
 
@@ -29,6 +29,8 @@ const Species = props => {
   const { className, data, title, ...rest } = props;
 
   const classes = useStyles();
+  const { history } = useRouter();
+
   const [species, setSpecies] = useState([]);
 
   useEffect(async () => {
@@ -77,7 +79,12 @@ const Species = props => {
                 </TableHead>
                 <TableBody>
                   {species.map((specie, key) => (
-                    <TableRow key={key}>
+                    <TableRow 
+                      hover
+                      key={key}
+                      onClick={() => history.push('/specie' + specie.data.url.split('species')[1] + 'summary')}
+                      style={{cursor: 'pointer'}}
+                    >
                       <TableCell>{specie.data.name}</TableCell>
                       <TableCell>{specie.data.language}</TableCell>
                       <TableCell>{specie.data.classification}</TableCell>
