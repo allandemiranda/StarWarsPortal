@@ -112,8 +112,8 @@ const Results = props => {
                   {starships.map((starship, key) => (
                     <TableRow                      
                       hover
-                      key={key}
-                      onClick={() => history.push('/starship' + starship.url.split('starship')[1] + 'summary')}
+                      key={key} 
+                      onClick={() => history.push('/starship' + starship.url.split('starships')[1] + 'summary')}
                       style={{cursor: 'pointer'}}
                     >                      
                       <TableCell>{starship.name}</TableCell>

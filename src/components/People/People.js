@@ -14,7 +14,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-
+import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
 import { GenericMoreButton } from 'components';
 
@@ -26,23 +26,67 @@ const useStyles = makeStyles(() => ({
 }));
 
 const People = props => {
-  const { className, data, title, ...rest } = props;
+  const { className, variable, data, title, ...rest } = props;
 
   const classes = useStyles();
+  const { history } = useRouter();
+
   const [people, setPeople] = useState([]);
 
   useEffect(async () => {
     let mounted = true;
 
-    const fetchPeople = async () => {
-      const list_people = await data.people.map(async (url)=>{
-        const response = await axios.get(url.split('/api')[1])
-        return response
-      })
-      if (mounted) {
-        const results = await Promise.all(list_people)
-        setPeople(results);
-      }
+    const fetchPeople = async () => {   
+      switch (variable) {
+        case 'pilots':
+          {
+            const list_people = await data.pilots.map(async (url)=>{
+              const response = await axios.get(url.split('/api')[1])
+              return response
+            })
+            if (mounted) {
+              const results = await Promise.all(list_people);
+              setPeople(results);
+            }
+          }
+          break;
+        case 'residents':
+          {
+            const list_people = await data.residents.map(async (url)=>{
+              const response = await axios.get(url.split('/api')[1])
+              return response
+            })
+            if (mounted) {
+              const results = await Promise.all(list_people);
+              setPeople(results);
+            }
+          }
+          break;
+        case 'characters':
+          {
+            const list_people = await data.characters.map(async (url)=>{
+              const response = await axios.get(url.split('/api')[1])
+              return response
+            })
+            if (mounted) {
+              const results = await Promise.all(list_people);
+              setPeople(results);
+            }
+          }
+          break;
+        default:
+        {
+          const list_people = await data.people.map(async (url)=>{
+            const response = await axios.get(url.split('/api')[1])
+            return response
+          });
+          if (mounted) {
+            const results = await Promise.all(list_people);
+            setPeople(results);
+          }
+        }
+          
+      }  
     };
 
     await fetchPeople();
@@ -77,7 +121,12 @@ const People = props => {
                 </TableHead>
                 <TableBody>
                   {people.map((person, key) => (
-                    <TableRow key={key}>
+                    <TableRow 
+                      hover
+                      key={key}
+                      onClick={() => history.push('/person' + person.data.url.split('people')[1] + 'summary')}
+                      style={{cursor: 'pointer'}}
+                    >
                       <TableCell>{person.data.name}</TableCell>
                       <TableCell>{person.data.mass} {' kilograms'}</TableCell>
                       <TableCell>{person.data.height} {' centimeters'}</TableCell>
@@ -97,7 +146,8 @@ const People = props => {
 People.propTypes = {
   className: PropTypes.string,
   data: PropTypes.any.isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  variable: PropTypes.string
 };
 
 export default People;

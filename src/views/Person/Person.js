@@ -11,7 +11,8 @@ import {
   Films, 
   Species, 
   Starships,
-  Vehicles 
+  Vehicles,
+  Planets
 } from 'components';
 import { PersonInfo } from './components';
 
@@ -44,11 +45,12 @@ const Person = props => {
     { value: 'films', label: 'Films' },
     { value: 'species', label: 'Species'},
     { value: 'starships', label: 'Starships'},
-    { value: 'vehicles', label: 'Vehicles'}
+    { value: 'vehicles', label: 'Vehicles'},
+    { value: 'planets', label: 'Planets'}
   ];
 
   if (!tab) {
-    return <Redirect to={`/details/${id}/summary`} />;
+    return <Redirect to={`/person/${id}/summary`} />;
   }
 
   if (!tabs.find(t => t.value === tab)) {
@@ -128,6 +130,11 @@ const Person = props => {
         <Vehicles 
           data={person} 
           title={'Person Vehicles'} 
+        />}
+        {tab === 'planets' && 
+        <Planets 
+          data={person} 
+          title={'Person Planets'} 
         />}
       </div>
     </Page>

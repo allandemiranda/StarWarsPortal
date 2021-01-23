@@ -13,6 +13,7 @@ import {
   TableCell
 } from '@material-ui/core';
 import axios from 'utils/axios';
+import { GenericMoreButton } from 'components';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -62,7 +63,10 @@ const PersonInfo = props => {
       {...rest}
       className={clsx(classes.root, className)}
     >
-      <CardHeader title="Person info" />
+      <CardHeader 
+        action={<GenericMoreButton />}
+        title="Person info"       
+      />
       <Divider />
       {homeworld && <CardContent className={classes.content}>
         <Table>

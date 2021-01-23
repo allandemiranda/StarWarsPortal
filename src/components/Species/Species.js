@@ -16,7 +16,8 @@ import {
 } from '@material-ui/core';
 import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
-import { GenericMoreButton } from 'components';
+import { GenericMoreButton, Alert } from 'components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -32,18 +33,25 @@ const Species = props => {
   const { history } = useRouter();
 
   const [species, setSpecies] = useState([]);
+  const [progress, setProgress] = useState(false);
+  const [alertNull, setAlertNull] = useState(false);
 
   useEffect(async () => {
     let mounted = true;
 
     const fetchSpecies = async () => {
-      const list_species = await data.species.map(async (url)=>{
-        const response = await axios.get(url.split('/api')[1])
-        return response
-      })
-      if (mounted) {
-        const results = await Promise.all(list_species)
-        setSpecies(results);
+      if(data.species.length > 0){
+        const list_species = await data.species.map(async (url)=>{
+          const response = await axios.get(url.split('/api')[1])
+          return response
+        })
+        if (mounted) {
+          const results = await Promise.all(list_species)
+          setSpecies(results);
+        }
+      } else{
+        setProgress(true);
+        setAlertNull(true);
       }
     };
 
@@ -54,18 +62,33 @@ const Species = props => {
     };
   }, []);
 
+  useEffect(()=>{
+    if(species.length > 0){
+      const response = species.map((value)=>{
+        return (value.status === 200)
+      });
+      setProgress(response.some(element => element != false))
+    }
+  },[species])
+
   return (
     <div
       {...rest}
       className={clsx(classes.root, className)}
     >
-      <Card>
+      { alertNull ? 
+        <Alert
+          message={'There is no information here!'}
+          variant={'warning'}
+        /> : null }
+
+      {!progress ? <CircularProgress/> : !alertNull && <Card>
         <CardHeader
           action={<GenericMoreButton />}
           title={title}
         />
         <Divider />
-        {species && <CardContent className={classes.content}>
+        <CardContent className={classes.content}>
           <PerfectScrollbar>
             <div className={classes.inner}>
               <Table>
@@ -95,8 +118,8 @@ const Species = props => {
               </Table>
             </div>
           </PerfectScrollbar>
-        </CardContent>}
-      </Card>
+        </CardContent>
+      </Card>}
     </div>
   );
 };

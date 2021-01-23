@@ -2,13 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import { Page } from 'components';
-import {
-  Header,
-  FAQ,
-  PluginsSupport,
-  SourceFiles,
-  UserFlows
-} from './components';
+import { Header } from './components';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -20,13 +14,9 @@ const Presentation = () => {
   return (
     <Page
       className={classes.root}
-      title="Presentation"
+      title="Home"
     >
       <Header />
-      <UserFlows />
-      <PluginsSupport />
-      <SourceFiles />
-      <FAQ />
     </Page>
   );
 };
