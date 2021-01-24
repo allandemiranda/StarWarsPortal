@@ -26,6 +26,14 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/**
+ * A Species resource is a type of person or character within the Star Wars Universe
+ * 
+ * @param {Array} data A list of species url
+ * @param {String} title The list title
+ * 
+ * @author Allan de Miranda
+ */
 const Species = props => {
   const { className, data, title, ...rest } = props;
 
@@ -146,8 +154,17 @@ const Species = props => {
 };
 
 Species.propTypes = {
+  /**
+   * Class component
+   */
   className: PropTypes.string,
+  /**
+   * A list of species url
+   */
   data: PropTypes.any.isRequired,
+  /**
+   * The list title
+   */
   title: PropTypes.string.isRequired
 };
 

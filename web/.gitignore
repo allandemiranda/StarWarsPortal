@@ -25,3 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 .eslintcache
+
+# SSL Key
+cert.pem
+key.pem
