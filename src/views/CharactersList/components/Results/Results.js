@@ -16,9 +16,10 @@ import {
   TablePagination,
   TableRow
 } from '@material-ui/core';
-import { GenericMoreButton } from 'components';
+import { GenericMoreButton, Alert } from 'components';
 import axios from 'utils/axios';
 import useRouter from 'utils/useRouter';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -44,37 +45,45 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = props => {
-  const { className, characters, ...rest } = props;
+  const { className, ...rest } = props;
 
   const classes = useStyles();
   const { history } = useRouter();
 
   const [people, setPeople] = useState([]);
   const [page, setPage] = useState(0); 
-  const [nextPage, setNextPage] = useState(true);
+  const [nextPage, setNextPage] = useState(true);  
+  const [progress, setProgress] = useState(true);
+  const [alertNull, setAlertNull] = useState(false);
+  const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
 
   const handleChangePage = (event, page) => {
     setPage(page);
   };
 
-  useEffect(()=>{
-    setPeople(characters)
-  },[characters]); 
-
   useEffect(() => {
     let mounted = true;
 
     const fetchCustomers = () => {
-      setPeople([])
+      setPeople([]);
+      setProgress(true);
       axios.get('/people/?page='+(page+1)).then(response => {
-        if (mounted) {
-          setPeople(response.data.results);
-          if(response.data.next === null){
-            setNextPage(false)
+        if (mounted) {          
+          setProgress(false);
+          if(response.data.results.length > 0){
+            setPeople(response.data.results);
+            if(response.data.next === null){
+              setNextPage(false)
+            } else {
+              setNextPage(true)
+            }
           } else {
-            setNextPage(true)
+            setAlertNull(true);
           }
         }
+      }).catch((err)=>{
+        setProgress(false);
+        setAlertAxios({status: true, msg: err.message + ' !'})
       });
     };
 
@@ -90,6 +99,19 @@ const Results = props => {
       {...rest}
       className={clsx(classes.root, className)}
     >
+      {alertAxios.status ? 
+        <Alert
+          message={alertAxios.msg}
+          variant={'error'}
+        /> : null }
+      
+      {alertNull ? 
+        <Alert
+          message={'There is no information here!'}
+          variant={'warning'}
+        /> : null }
+
+      {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
       <Card>
         <CardHeader
           action={<GenericMoreButton />}
@@ -130,6 +152,7 @@ const Results = props => {
         <CardActions className={classes.actions}>
           <TablePagination            
             component="div"
+            count={-1} 
             labelDisplayedRows={()=>{false}}
             nextIconButtonProps={{
               style: {
@@ -140,17 +163,16 @@ const Results = props => {
             }}
             onChangePage={handleChangePage}
             page={page}            
-            rowsPerPage={false}
-            rowsPerPageOptions={[]}            
+            rowsPerPage={-1}
+            rowsPerPageOptions={[]}                       
           />
         </CardActions>
-      </Card>
+      </Card>}
     </div>
   );
 };
 
 Results.propTypes = {
-  characters: PropTypes.array.isRequired,
   className: PropTypes.string  
 };
 

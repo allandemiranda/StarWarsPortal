@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import axios from 'utils/axios';
 import { Page, Header } from 'components';
 import { Results } from './components';
 
@@ -16,26 +15,6 @@ const useStyles = makeStyles(theme => ({
 const CharactersList = () => {
   const classes = useStyles(); 
 
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const fetchData = () => {
-      axios.get('/people/').then(response => {
-        if (mounted) {
-          setData(response.data.results);
-        }
-      });
-    };
-
-    fetchData();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
   return (
     <Page
       className={classes.root}
@@ -44,14 +23,10 @@ const CharactersList = () => {
       <Header
         subTitle={'People'}
         title={'Characters'}
+      />      
+      <Results
+        className={classes.results}                  
       />
-      {data && (
-        <Results
-          characters={data}  
-          className={classes.results}  
-                
-        />
-      )}
     </Page>
   );
 };
