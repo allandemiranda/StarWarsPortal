@@ -9,7 +9,8 @@ import {
   Header, 
   Summary, 
   Films, 
-  People
+  Pilots,
+  Alert
 } from 'components';
 import { StarshipInfo } from './components';
 
@@ -52,6 +53,7 @@ const Starship = props => {
   }
 
   const [starship, setStarship] = useState();
+  const [error, setError] = useState();
 
   useEffect(() => {
     let mounted = true;
@@ -61,6 +63,8 @@ const Starship = props => {
         if (mounted) {
           setStarship(response.data); 
         }
+      }).catch((error)=>{
+        setError(error)
       });
     };
 
@@ -72,10 +76,23 @@ const Starship = props => {
   }, []);
 
   if (!starship) {
-    return null;
+    if(error){
+      return (
+        <Page
+          className={classes.root}
+          title="Starship Details"
+        >
+          <Alert
+            message={error.message}
+            variant={'error'}
+          />
+        </Page>);
+    } else {
+      return null;
+    }
   }
 
-  return (
+  return (      
     <Page
       className={classes.root}
       title="Starship Details"
@@ -111,10 +128,9 @@ const Starship = props => {
           title={'Starship Films'} 
         />}
         {tab === 'pilots' && 
-        <People 
+        <Pilots 
           data={starship}
-          title={'Starship Pilots'} 
-          variable={'pilots'}
+          title={'Starship Pilots'}
         />}        
       </div>
     </Page>

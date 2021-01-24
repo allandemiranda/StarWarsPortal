@@ -34,7 +34,7 @@ const Homeworld = props => {
   useEffect(async () => {
     let mounted = true;
 
-    const fetchHomeworld = async () => {    
+    const fetchHomeworld = async () => {  
       const response = await axios.get(data.homeworld.split('/api')[1])
       if (mounted) {
         const results = await Promise.all([response]);

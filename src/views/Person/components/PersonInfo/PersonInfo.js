@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import axios from 'utils/axios';
 import { GenericMoreButton } from 'components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -38,6 +39,7 @@ const PersonInfo = props => {
   const classes = useStyles();
 
   const [homeworld, setHomeworld] = useState();
+  const [progress, setProgress] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -45,8 +47,9 @@ const PersonInfo = props => {
     const fetchHomeworld = () => {
       const homeworld_url = person.homeworld.split('api/')[1];      
       axios.get(homeworld_url).then(response => {
-        if (mounted) {
+        if (mounted) {          
           setHomeworld(response.data);
+          setProgress(false);
         }
       });
     };
@@ -59,54 +62,57 @@ const PersonInfo = props => {
   }, []);
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardHeader 
-        action={<GenericMoreButton />}
-        title="Person info"       
-      />
-      <Divider />
-      {homeworld && <CardContent className={classes.content}>
-        <Table>
-          <TableBody>            
-            <TableRow selected >
-              <TableCell>Birthday</TableCell>
-              <TableCell>{person.birth_year}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Eye Color</TableCell>
-              <TableCell>{person.eye_color}</TableCell>
-            </TableRow>
-            <TableRow selected>
-              <TableCell>Gender</TableCell>
-              <TableCell>{person.gender}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Hair Color</TableCell>
-              <TableCell>{person.hair_color}</TableCell>
-            </TableRow>
-            <TableRow selected>
-              <TableCell>Height</TableCell>
-              <TableCell>{person.height}{' centimeters'}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Homeworld</TableCell>
-              <TableCell>{homeworld.name}</TableCell>
-            </TableRow>
-            <TableRow selected>
-              <TableCell>Mass</TableCell>
-              <TableCell>{person.mass}{' kilograms'}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Skin Color</TableCell>
-              <TableCell>{person.skin_color}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>}    
-    </Card>
+    <div>
+      {progress ? <CircularProgress/> :
+        <Card
+          {...rest}
+          className={clsx(classes.root, className)}
+        >
+          <CardHeader 
+            action={<GenericMoreButton />}
+            title="Person info"       
+          />
+          <Divider />
+          <CardContent className={classes.content}>
+            <Table>
+              <TableBody>            
+                <TableRow selected >
+                  <TableCell>Birthday</TableCell>
+                  <TableCell>{person.birth_year}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Eye Color</TableCell>
+                  <TableCell>{person.eye_color}</TableCell>
+                </TableRow>
+                <TableRow selected>
+                  <TableCell>Gender</TableCell>
+                  <TableCell>{person.gender}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Hair Color</TableCell>
+                  <TableCell>{person.hair_color}</TableCell>
+                </TableRow>
+                <TableRow selected>
+                  <TableCell>Height</TableCell>
+                  <TableCell>{person.height}{' centimeters'}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Homeworld</TableCell>
+                  <TableCell>{homeworld.name}</TableCell>
+                </TableRow>
+                <TableRow selected>
+                  <TableCell>Mass</TableCell>
+                  <TableCell>{person.mass}{' kilograms'}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Skin Color</TableCell>
+                  <TableCell>{person.skin_color}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>   
+        </Card>}
+    </div>
   );
 };
 

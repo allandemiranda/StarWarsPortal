@@ -12,7 +12,8 @@ import {
   Species, 
   Starships,
   Vehicles,
-  Planets
+  Homeworld,
+  Alert
 } from 'components';
 import { PersonInfo } from './components';
 
@@ -46,7 +47,7 @@ const Person = props => {
     { value: 'species', label: 'Species'},
     { value: 'starships', label: 'Starships'},
     { value: 'vehicles', label: 'Vehicles'},
-    { value: 'planets', label: 'Planets'}
+    { value: 'homeworld', label: 'Homeworld'}
   ];
 
   if (!tab) {
@@ -58,6 +59,7 @@ const Person = props => {
   }
 
   const [person, setPerson] = useState();
+  const [error, setError] = useState();
 
   useEffect(() => {
     let mounted = true;
@@ -67,6 +69,8 @@ const Person = props => {
         if (mounted) {
           setPerson(response.data); 
         }
+      }).catch((error)=>{
+        setError(error)
       });
     };
 
@@ -78,7 +82,20 @@ const Person = props => {
   }, []);
 
   if (!person) {
-    return null;
+    if(error){
+      return (
+        <Page
+          className={classes.root}
+          title="Starship Details"
+        >
+          <Alert
+            message={error.message}
+            variant={'error'}
+          />
+        </Page>);
+    } else {
+      return null;
+    }
   }
 
   return (
@@ -131,10 +148,10 @@ const Person = props => {
           data={person} 
           title={'Person Vehicles'} 
         />}
-        {tab === 'planets' && 
-        <Planets 
+        {tab === 'homeworld' && 
+        <Homeworld 
           data={person} 
-          title={'Person Planets'} 
+          title={'Person Homeworld'} 
         />}
       </div>
     </Page>

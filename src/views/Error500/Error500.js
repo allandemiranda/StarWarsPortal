@@ -53,14 +53,7 @@ const Error500 = () => {
       >
         You either tried some shady route or you came here by mistake. Whichever
         it is, try using the navigation
-      </Typography>
-      <div className={classes.imageContainer}>
-        <img
-          alt="Under development"
-          className={classes.image}
-          src="/images/undraw_server_down_s4lk.svg"
-        />
-      </div>
+      </Typography>      
       <div className={classes.buttonContainer}>
         <Button
           color="primary"
