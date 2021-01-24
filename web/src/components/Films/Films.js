@@ -26,6 +26,14 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/**
+ * A Film resource is a single film
+ * 
+ * @param {Array} data A list of film url
+ * @param {String} title The list title
+ * 
+ * @author Allan de Miranda
+ */
 const Films = props => {
   const { className, data, title, ...rest } = props;
 
@@ -144,8 +152,17 @@ const Films = props => {
 };
 
 Films.propTypes = {
+  /**
+   * Class component
+   */
   className: PropTypes.string,
+  /**
+   * A list of person url
+   */
   data: PropTypes.any.isRequired,
+  /**
+   * The list title
+   */
   title: PropTypes.string.isRequired
 };
 

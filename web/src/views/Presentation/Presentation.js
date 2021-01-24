@@ -1,6 +1,11 @@
+/**
+ * @description Welcome screen
+ * 
+ * @author Allan de Miranda
+ */
+
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-
 import { Page } from 'components';
 import { Header } from './components';
 

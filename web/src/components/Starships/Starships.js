@@ -26,6 +26,14 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/**
+ * A Starship resource is a single transport craft that has hyperdrive capability
+ * 
+ * @param {Array} data A list of starship url
+ * @param {String} title The list title
+ * 
+ * @author Allan de Miranda
+ */
 const Starships = props => {
   const { className, data, title, ...rest } = props;
 
@@ -146,8 +154,17 @@ const Starships = props => {
 };
 
 Starships.propTypes = {
+  /**
+   * Class component
+   */
   className: PropTypes.string,
+  /**
+   * A list of person url
+   */
   data: PropTypes.any.isRequired,
+  /**
+   * The list title
+   */
   title: PropTypes.string.isRequired
 };
 
