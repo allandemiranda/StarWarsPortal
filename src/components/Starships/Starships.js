@@ -16,7 +16,8 @@ import {
 } from '@material-ui/core';
 import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
-import { GenericMoreButton } from 'components';
+import { GenericMoreButton, Alert } from 'components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -32,18 +33,26 @@ const Starships = props => {
   const { history } = useRouter();
 
   const [starships, setStarships] = useState([]);
+  const [progress, setProgress] = useState(true);
+  const [alertNull, setAlertNull] = useState(false);
+  const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
 
   useEffect(async () => {
     let mounted = true;
 
     const fetchStarships = async () => {
-      const list_starships = await data.starships.map(async (url)=>{
-        const response = await axios.get(url.split('/api')[1])
-        return response
-      })
-      if (mounted) {
-        const results = await Promise.all(list_starships)
-        setStarships(results);
+      if(data.starships.length > 0){
+        const list_starships = await data.starships.map(async (url)=>{
+          const response = await axios.get(url.split('/api')[1])
+          return response
+        })
+        if (mounted) {
+          const results = await Promise.all(list_starships)
+          setStarships(results);
+        }
+      } else {
+        setProgress(false);
+        setAlertNull(true);
       }
     };
 
@@ -54,18 +63,48 @@ const Starships = props => {
     };
   }, []);
 
+  useEffect(()=>{
+    if(starships.length > 0){
+      var errorMsg = 'Error!';
+      for(var i=0; i<starships.length; ++i){
+        if(starships[i].status !== 200){
+          errorMsg = starships[i].status;
+          starships.splice(i,1);
+          --i;
+        }
+      }
+      setProgress(false);
+      if(starships.length === 0){
+        setAlertAxios({status: true, msg: errorMsg})
+      }
+    }
+  },[starships])
+
   return (
     <div
       {...rest}
       className={clsx(classes.root, className)}
     >
+      {alertAxios.status ? 
+        <Alert
+          message={alertAxios.msg}
+          variant={'error'}
+        /> : null }
+      
+      {alertNull ? 
+        <Alert
+          message={'There is no information here!'}
+          variant={'warning'}
+        /> : null }
+
+      {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
       <Card>
         <CardHeader
           action={<GenericMoreButton />}
           title={title}
         />
         <Divider />
-        {starships && <CardContent className={classes.content}>
+        <CardContent className={classes.content}>
           <PerfectScrollbar>
             <div className={classes.inner}>
               <Table>
@@ -95,8 +134,8 @@ const Starships = props => {
               </Table>
             </div>
           </PerfectScrollbar>
-        </CardContent>}
-      </Card>
+        </CardContent>
+      </Card>}
     </div>
   );
 };

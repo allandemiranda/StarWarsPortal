@@ -14,6 +14,6 @@ export { default as Species } from './Species';
 export { default as Residents } from './Residents';
 export { default as Pilots } from './Pilots';
 export { default as People } from './People';
-export { default as Planets } from './Planets';
+export { default as Homeworld } from './Homeworld';
 export { default as Characters } from './Characters';
 

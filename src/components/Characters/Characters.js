@@ -14,9 +14,10 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-
+import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
-import { GenericMoreButton } from 'components';
+import { GenericMoreButton, Alert } from 'components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -29,19 +30,29 @@ const Characters = props => {
   const { className, data, title, ...rest } = props;
 
   const classes = useStyles();
+  const { history } = useRouter();
+
   const [people, setPeople] = useState([]);
+  const [progress, setProgress] = useState(true);
+  const [alertNull, setAlertNull] = useState(false);
+  const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
 
   useEffect(async () => {
     let mounted = true;
 
     const fetchPeople = async () => {
-      const list_people = await data.characters.map(async (url)=>{
-        const response = await axios.get(url.split('/api')[1])
-        return response
-      })
-      if (mounted) {
-        const results = await Promise.all(list_people)
-        setPeople(results);
+      if(data.characters.length > 0){
+        const list_people = await data.characters.map(async (url)=>{
+          const response = await axios.get(url.split('/api')[1])
+          return response
+        })
+        if (mounted) {
+          const results = await Promise.all(list_people)
+          setPeople(results);
+        }
+      } else {
+        setProgress(false);
+        setAlertNull(true);
       }
     };
 
@@ -52,18 +63,48 @@ const Characters = props => {
     };
   }, []);
 
+  useEffect(()=>{
+    if(people.length > 0){
+      var errorMsg = 'Error!';
+      for(var i=0; i<people.length; ++i){
+        if(people[i].status !== 200){
+          errorMsg = people[i].status;
+          people.splice(i,1);
+          --i;
+        }
+      }
+      setProgress(false);
+      if(people.length === 0){
+        setAlertAxios({status: true, msg: errorMsg})
+      }
+    }
+  },[people])
+
   return (
     <div
       {...rest}
       className={clsx(classes.root, className)}
     >
+      {alertAxios.status ? 
+        <Alert
+          message={alertAxios.msg}
+          variant={'error'}
+        /> : null }
+      
+      {alertNull ? 
+        <Alert
+          message={'There is no information here!'}
+          variant={'warning'}
+        /> : null }
+
+      {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
       <Card>
         <CardHeader
           action={<GenericMoreButton />}
           title={title}
         />
         <Divider />
-        {people && <CardContent className={classes.content}>
+        <CardContent className={classes.content}>
           <PerfectScrollbar>
             <div className={classes.inner}>
               <Table>
@@ -77,7 +118,12 @@ const Characters = props => {
                 </TableHead>
                 <TableBody>
                   {people.map((person, key) => (
-                    <TableRow key={key}>
+                    <TableRow 
+                      hover
+                      key={key}
+                      onClick={() => history.push('/person' + person.data.url.split('people')[1] + 'summary')}
+                      style={{cursor: 'pointer'}}
+                    >
                       <TableCell>{person.data.name}</TableCell>
                       <TableCell>{person.data.mass} {' kilograms'}</TableCell>
                       <TableCell>{person.data.height} {' centimeters'}</TableCell>
@@ -88,8 +134,8 @@ const Characters = props => {
               </Table>
             </div>
           </PerfectScrollbar>
-        </CardContent>}
-      </Card>
+        </CardContent>
+      </Card>}
     </div>
   );
 };

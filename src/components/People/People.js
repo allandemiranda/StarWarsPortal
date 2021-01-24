@@ -16,7 +16,8 @@ import {
 } from '@material-ui/core';
 import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
-import { GenericMoreButton } from 'components';
+import { GenericMoreButton, Alert } from 'components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -26,67 +27,33 @@ const useStyles = makeStyles(() => ({
 }));
 
 const People = props => {
-  const { className, variable, data, title, ...rest } = props;
+  const { className, data, title, ...rest } = props;
 
   const classes = useStyles();
   const { history } = useRouter();
 
   const [people, setPeople] = useState([]);
+  const [progress, setProgress] = useState(true);
+  const [alertNull, setAlertNull] = useState(false);
+  const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
 
   useEffect(async () => {
     let mounted = true;
 
-    const fetchPeople = async () => {   
-      switch (variable) {
-        case 'pilots':
-          {
-            const list_people = await data.pilots.map(async (url)=>{
-              const response = await axios.get(url.split('/api')[1])
-              return response
-            })
-            if (mounted) {
-              const results = await Promise.all(list_people);
-              setPeople(results);
-            }
-          }
-          break;
-        case 'residents':
-          {
-            const list_people = await data.residents.map(async (url)=>{
-              const response = await axios.get(url.split('/api')[1])
-              return response
-            })
-            if (mounted) {
-              const results = await Promise.all(list_people);
-              setPeople(results);
-            }
-          }
-          break;
-        case 'characters':
-          {
-            const list_people = await data.characters.map(async (url)=>{
-              const response = await axios.get(url.split('/api')[1])
-              return response
-            })
-            if (mounted) {
-              const results = await Promise.all(list_people);
-              setPeople(results);
-            }
-          }
-          break;
-        default:
-        {
-          const list_people = await data.people.map(async (url)=>{
-            const response = await axios.get(url.split('/api')[1])
-            return response
-          });
-          if (mounted) {
-            const results = await Promise.all(list_people);
-            setPeople(results);
-          }
+    const fetchPeople = async () => {
+      if(data.people.length > 0){
+        const list_people = await data.people.map(async (url)=>{
+          const response = await axios.get(url.split('/api')[1])
+          return response
+        })
+        if (mounted) {
+          const results = await Promise.all(list_people)
+          setPeople(results);
         }
-          
-      }  
+      } else {
+        setProgress(false);
+        setAlertNull(true);
+      }
     };
 
     await fetchPeople();
@@ -96,18 +63,48 @@ const People = props => {
     };
   }, []);
 
+  useEffect(()=>{
+    if(people.length > 0){
+      var errorMsg = 'Error!';
+      for(var i=0; i<people.length; ++i){
+        if(people[i].status !== 200){
+          errorMsg = people[i].status;
+          people.splice(i,1);
+          --i;
+        }
+      }
+      setProgress(false);
+      if(people.length === 0){
+        setAlertAxios({status: true, msg: errorMsg})
+      }
+    }
+  },[people])
+
   return (
     <div
       {...rest}
       className={clsx(classes.root, className)}
     >
+      {alertAxios.status ? 
+        <Alert
+          message={alertAxios.msg}
+          variant={'error'}
+        /> : null }
+      
+      {alertNull ? 
+        <Alert
+          message={'There is no information here!'}
+          variant={'warning'}
+        /> : null }
+
+      {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
       <Card>
         <CardHeader
           action={<GenericMoreButton />}
           title={title}
         />
         <Divider />
-        {people && <CardContent className={classes.content}>
+        <CardContent className={classes.content}>
           <PerfectScrollbar>
             <div className={classes.inner}>
               <Table>
@@ -137,8 +134,8 @@ const People = props => {
               </Table>
             </div>
           </PerfectScrollbar>
-        </CardContent>}
-      </Card>
+        </CardContent>
+      </Card>}
     </div>
   );
 };
@@ -146,8 +143,7 @@ const People = props => {
 People.propTypes = {
   className: PropTypes.string,
   data: PropTypes.any.isRequired,
-  title: PropTypes.string.isRequired,
-  variable: PropTypes.string
+  title: PropTypes.string.isRequired
 };
 
 export default People;

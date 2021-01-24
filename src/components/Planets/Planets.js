@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
@@ -10,11 +11,13 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableHead,
   TableRow
 } from '@material-ui/core';
-
+import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
-import { GenericMoreButton } from 'components';
+import { GenericMoreButton, Alert } from 'components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -27,84 +30,112 @@ const Planets = props => {
   const { className, data, title, ...rest } = props;
 
   const classes = useStyles();
-  const [homeworld, setHomeworld] = useState([]);
+  const { history } = useRouter();
+
+  const [planets, setPlanets] = useState([]);
+  const [progress, setProgress] = useState(true);
+  const [alertNull, setAlertNull] = useState(false);
+  const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
 
   useEffect(async () => {
     let mounted = true;
 
-    const fetchHomeworld = async () => {    
-      const response = await axios.get(data.homeworld.split('/api')[1])
-      if (mounted) {
-        const results = await Promise.all([response]);
-        setHomeworld(results[0].data);
+    const fetchPlanets = async () => {
+      if(data.planets.length > 0){
+        const list_planets = await data.planets.map(async (url)=>{
+          const response = await axios.get(url.split('/api')[1])
+          return response
+        })
+        if (mounted) {
+          const results = await Promise.all(list_planets)
+          setPlanets(results);
+        }
+      } else {
+        setProgress(false);
+        setAlertNull(true);
       }
     };
 
-    await fetchHomeworld();
+    await fetchPlanets();
 
     return () => {
       mounted = false;
     };
   }, []);
 
+  useEffect(()=>{
+    if(planets.length > 0){
+      var errorMsg = 'Error!';
+      for(var i=0; i<planets.length; ++i){
+        if(planets[i].status !== 200){
+          errorMsg = planets[i].status;
+          planets.splice(i,1);
+          --i;
+        }
+      }
+      setProgress(false);
+      if(planets.length === 0){
+        setAlertAxios({status: true, msg: errorMsg})
+      }
+    }
+  },[planets])
+
   return (
     <div
       {...rest}
       className={clsx(classes.root, className)}
     >
-      <Card>
-        <CardHeader
-          action={<GenericMoreButton />}
-          title={title}
-        />
-        <Divider />
-        <CardContent className={classes.content}>
-          {homeworld && <Table>
-            <TableBody>            
-              <TableRow
-                onClick={() => history.push('/planet' + homeworld.url.split('planets')[1] + 'summary')}
-                selected
-                style={{cursor: 'pointer'}}
-              >
-                <TableCell>Name</TableCell>
-                <TableCell>{homeworld.name}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Climate</TableCell>
-                <TableCell>{homeworld.climate}</TableCell>
-              </TableRow>
-              <TableRow selected>
-                <TableCell>Diameter</TableCell>
-                <TableCell>{homeworld.diameter} {' kilometers'}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Gravity</TableCell>
-                <TableCell>{homeworld.gravity} {' standard G'}</TableCell>
-              </TableRow>
-              <TableRow selected>
-                <TableCell>Orbital Period</TableCell>
-                <TableCell>{homeworld.orbital_period} {' hours'}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Population</TableCell>
-                <TableCell>{homeworld.population}</TableCell>
-              </TableRow>
-              <TableRow selected>
-                <TableCell>Rotation Period</TableCell>
-                <TableCell>{homeworld.rotation_period} {' days'}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Surface Water</TableCell>
-                <TableCell>{homeworld.surface_water}{' percentage of the planet surface'}</TableCell>
-              </TableRow>
-              <TableRow selected>
-                <TableCell>Terrain</TableCell>
-                <TableCell>{homeworld.terrain}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>}
-        </CardContent>        
-      </Card>
+      {alertAxios.status ? 
+        <Alert
+          message={alertAxios.msg}
+          variant={'error'}
+        /> : null }
+      
+      {alertNull ? 
+        <Alert
+          message={'There is no information here!'}
+          variant={'warning'}
+        /> : null }
+
+      {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
+       <Card>
+         <CardHeader
+           action={<GenericMoreButton />}
+           title={title}
+         />
+         <Divider />
+         <CardContent className={classes.content}>
+           <PerfectScrollbar>
+             <div className={classes.inner}>
+               <Table>
+                 <TableHead>
+                   <TableRow>
+                     <TableCell>Name</TableCell>
+                     <TableCell>Climate</TableCell>
+                     <TableCell>Diameter</TableCell>  
+                     <TableCell>Population</TableCell>  
+                   </TableRow>
+                 </TableHead>
+                 <TableBody>
+                   {planets.map((planet, key) => (
+                     <TableRow 
+                       hover
+                       key={key}
+                       onClick={() => history.push('/planet' + planet.data.url.split('planets')[1] + 'summary')}
+                       style={{cursor: 'pointer'}}
+                     >
+                       <TableCell>{planet.data.name}</TableCell>
+                       <TableCell>{planet.data.climate}</TableCell>
+                       <TableCell>{planet.data.diameter} {' kilometers'}</TableCell>
+                       <TableCell>{planet.data.population}</TableCell>
+                     </TableRow>
+                   ))}
+                 </TableBody>
+               </Table>
+             </div>
+           </PerfectScrollbar>
+         </CardContent>
+       </Card>}
     </div>
   );
 };

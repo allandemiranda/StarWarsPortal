@@ -16,7 +16,8 @@ import {
 } from '@material-ui/core';
 import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
-import { GenericMoreButton } from 'components';
+import { GenericMoreButton, Alert } from 'components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -32,18 +33,26 @@ const Vehicles = props => {
   const { history } = useRouter();
 
   const [vehicles, setVehicles] = useState([]);
+  const [progress, setProgress] = useState(true);
+  const [alertNull, setAlertNull] = useState(false);
+  const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
 
   useEffect(async () => {
     let mounted = true;
 
     const fetchVehicles = async () => {
-      const list_vehicles = await data.vehicles.map(async (url)=>{
-        const response = await axios.get(url.split('/api')[1])
-        return response
-      })
-      if (mounted) {
-        const results = await Promise.all(list_vehicles)
-        setVehicles(results);
+      if(data.vehicles.length > 0){
+        const list_vehicles = await data.vehicles.map(async (url)=>{
+          const response = await axios.get(url.split('/api')[1])
+          return response
+        })
+        if (mounted) {
+          const results = await Promise.all(list_vehicles)
+          setVehicles(results);
+        }
+      } else {
+        setProgress(false);
+        setAlertNull(true);
       }
     };
 
@@ -54,18 +63,48 @@ const Vehicles = props => {
     };
   }, []);
 
+  useEffect(()=>{
+    if(vehicles.length > 0){
+      var errorMsg = 'Error!';
+      for(var i=0; i<vehicles.length; ++i){
+        if(vehicles[i].status !== 200){
+          errorMsg = vehicles[i].status;
+          vehicles.splice(i,1);
+          --i;
+        }
+      }
+      setProgress(false);
+      if(vehicles.length === 0){
+        setAlertAxios({status: true, msg: errorMsg})
+      }
+    }
+  },[vehicles])
+
   return (
     <div
       {...rest}
       className={clsx(classes.root, className)}
     >
+      {alertAxios.status ? 
+        <Alert
+          message={alertAxios.msg}
+          variant={'error'}
+        /> : null }
+      
+      {alertNull ? 
+        <Alert
+          message={'There is no information here!'}
+          variant={'warning'}
+        /> : null }
+
+      {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
       <Card>
         <CardHeader
           action={<GenericMoreButton />}
           title={title}
         />
         <Divider />
-        {vehicles && <CardContent className={classes.content}>
+        <CardContent className={classes.content}>
           <PerfectScrollbar>
             <div className={classes.inner}>
               <Table>
@@ -95,8 +134,8 @@ const Vehicles = props => {
               </Table>
             </div>
           </PerfectScrollbar>
-        </CardContent>}
-      </Card>
+        </CardContent>
+      </Card>}
     </div>
   );
 };

@@ -33,8 +33,9 @@ const Species = props => {
   const { history } = useRouter();
 
   const [species, setSpecies] = useState([]);
-  const [progress, setProgress] = useState(false);
+  const [progress, setProgress] = useState(true);
   const [alertNull, setAlertNull] = useState(false);
+  const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
 
   useEffect(async () => {
     let mounted = true;
@@ -50,7 +51,7 @@ const Species = props => {
           setSpecies(results);
         }
       } else{
-        setProgress(true);
+        setProgress(false);
         setAlertNull(true);
       }
     };
@@ -64,10 +65,18 @@ const Species = props => {
 
   useEffect(()=>{
     if(species.length > 0){
-      const response = species.map((value)=>{
-        return (value.status === 200)
-      });
-      setProgress(response.some(element => element != false))
+      var errorMsg = 'Error!';
+      for(var i=0; i<species.length; ++i){
+        if(species[i].status !== 200){
+          errorMsg = species[i].status;
+          species.splice(i,1);
+          --i;
+        }
+      }
+      setProgress(false);
+      if(species.length === 0){
+        setAlertAxios({status: true, msg: errorMsg})
+      }
     }
   },[species])
 
@@ -76,50 +85,57 @@ const Species = props => {
       {...rest}
       className={clsx(classes.root, className)}
     >
-      { alertNull ? 
+      {alertAxios.status ? 
+        <Alert
+          message={alertAxios.msg}
+          variant={'error'}
+        /> : null }
+      
+      {alertNull ? 
         <Alert
           message={'There is no information here!'}
           variant={'warning'}
         /> : null }
 
-      {!progress ? <CircularProgress/> : !alertNull && <Card>
-        <CardHeader
-          action={<GenericMoreButton />}
-          title={title}
-        />
-        <Divider />
-        <CardContent className={classes.content}>
-          <PerfectScrollbar>
-            <div className={classes.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Language</TableCell>
-                    <TableCell>Classification</TableCell>   
-                    <TableCell>Designation</TableCell> 
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {species.map((specie, key) => (
-                    <TableRow 
-                      hover
-                      key={key}
-                      onClick={() => history.push('/specie' + specie.data.url.split('species')[1] + 'summary')}
-                      style={{cursor: 'pointer'}}
-                    >
-                      <TableCell>{specie.data.name}</TableCell>
-                      <TableCell>{specie.data.language}</TableCell>
-                      <TableCell>{specie.data.classification}</TableCell>
-                      <TableCell>{specie.data.designation}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-      </Card>}
+      {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
+       <Card>
+         <CardHeader
+           action={<GenericMoreButton />}
+           title={title}
+         />
+         <Divider />
+         <CardContent className={classes.content}>
+           <PerfectScrollbar>
+             <div className={classes.inner}>
+               <Table>
+                 <TableHead>
+                   <TableRow>
+                     <TableCell>Name</TableCell>
+                     <TableCell>Language</TableCell>
+                     <TableCell>Classification</TableCell>   
+                     <TableCell>Designation</TableCell> 
+                   </TableRow>
+                 </TableHead>
+                 <TableBody>
+                   {species.map((specie, key) => (
+                     <TableRow 
+                       hover
+                       key={key}
+                       onClick={() => history.push('/specie' + specie.data.url.split('species')[1] + 'summary')}
+                       style={{cursor: 'pointer'}}
+                     >
+                       <TableCell>{specie.data.name}</TableCell>
+                       <TableCell>{specie.data.language}</TableCell>
+                       <TableCell>{specie.data.classification}</TableCell>
+                       <TableCell>{specie.data.designation}</TableCell>
+                     </TableRow>
+                   ))}
+                 </TableBody>
+               </Table>
+             </div>
+           </PerfectScrollbar>
+         </CardContent>
+       </Card>}
     </div>
   );
 };

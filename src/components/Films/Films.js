@@ -33,8 +33,9 @@ const Films = props => {
   const { history } = useRouter();
 
   const [films, setFilms] = useState([]);
-  const [progress, setProgress] = useState(false);
+  const [progress, setProgress] = useState(true);
   const [alertNull, setAlertNull] = useState(false);
+  const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
 
   useEffect(async () => {
     let mounted = true;
@@ -50,7 +51,7 @@ const Films = props => {
           setFilms(results);
         }
       } else {
-        setProgress(true);
+        setProgress(false);
         setAlertNull(true);
       }
     };
@@ -64,10 +65,18 @@ const Films = props => {
 
   useEffect(()=>{
     if(films.length > 0){
-      const response = films.map((value)=>{
-        return (value.status === 200)
-      });
-      setProgress(response.some(element => element != false))
+      var errorMsg = 'Error!';
+      for(var i=0; i<films.length; ++i){
+        if(films[i].status !== 200){
+          errorMsg = films[i].status;
+          films.splice(i,1);
+          --i;
+        }
+      }
+      setProgress(false);
+      if(films.length === 0){
+        setAlertAxios({status: true, msg: errorMsg})
+      }
     }
   },[films])
 
@@ -76,48 +85,55 @@ const Films = props => {
       {...rest}
       className={clsx(classes.root, className)}
     >
-      { alertNull ? 
+      {alertAxios.status ? 
+        <Alert
+          message={alertAxios.msg}
+          variant={'error'}
+        /> : null }
+      
+      {alertNull ? 
         <Alert
           message={'There is no information here!'}
           variant={'warning'}
         /> : null }
 
-      {!progress ? <CircularProgress/> : !alertNull && <Card>
-        <CardHeader
-          action={<GenericMoreButton />}
-          title={title}
-        />
-        <Divider />
-        <CardContent className={classes.content}>
-          <PerfectScrollbar>
-            <div className={classes.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Title</TableCell>
-                    <TableCell>Director</TableCell>
-                    <TableCell>Producer</TableCell>   
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {films.map((film, key) => (
-                    <TableRow 
-                      hover
-                      key={key}
-                      onClick={() => history.push('/film' + film.data.url.split('films')[1] + 'summary')}
-                      style={{cursor: 'pointer'}}
-                    >
-                      <TableCell>{film.data.title}</TableCell>
-                      <TableCell>{film.data.director}</TableCell>
-                      <TableCell>{film.data.producer}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-      </Card>}
+      {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
+       <Card>
+         <CardHeader
+           action={<GenericMoreButton />}
+           title={title}
+         />
+         <Divider />
+         <CardContent className={classes.content}>
+           <PerfectScrollbar>
+             <div className={classes.inner}>
+               <Table>
+                 <TableHead>
+                   <TableRow>
+                     <TableCell>Title</TableCell>
+                     <TableCell>Director</TableCell>
+                     <TableCell>Producer</TableCell>   
+                   </TableRow>
+                 </TableHead>
+                 <TableBody>
+                   {films.map((film, key) => (
+                     <TableRow 
+                       hover
+                       key={key}
+                       onClick={() => history.push('/film' + film.data.url.split('films')[1] + 'summary')}
+                       style={{cursor: 'pointer'}}
+                     >
+                       <TableCell>{film.data.title}</TableCell>
+                       <TableCell>{film.data.director}</TableCell>
+                       <TableCell>{film.data.producer}</TableCell>
+                     </TableRow>
+                   ))}
+                 </TableBody>
+               </Table>
+             </div>
+           </PerfectScrollbar>
+         </CardContent>
+       </Card>}
     </div>
   );
 };
