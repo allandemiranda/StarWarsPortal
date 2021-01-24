@@ -21,8 +21,8 @@ class TestDefaultSuite():
   def test_characters(self):
     # Test name: characters
     # Step # | name | target | value
-    # 1 | open | http://localhost:3000/presentation | 
-    self.driver.get("http://localhost:3000/presentation")
+    # 1 | open | https://localhost:3000/presentation | 
+    self.driver.get("https://localhost:3000/presentation")
     # 2 | mouseOver | css=.MuiListItem-root:nth-child(1) .MuiButton-label | 
     time.sleep(3)
     element = self.driver.find_element(By.CSS_SELECTOR, ".MuiListItem-root:nth-child(1) .MuiButton-label")
@@ -341,8 +341,8 @@ class TestDefaultSuite():
   def test_starships(self):
     # Test name: starships
     # Step # | name | target | value
-    # 1 | open | http://localhost:3000/presentation | 
-    self.driver.get("http://localhost:3000/presentation")
+    # 1 | open | https://localhost:3000/presentation | 
+    self.driver.get("https://localhost:3000/presentation")
     # 2 | click | css=.MuiListItem-root:nth-child(2) .MuiButton-label | 
     time.sleep(3)
     self.driver.find_element(By.CSS_SELECTOR, ".MuiListItem-root:nth-child(2) .MuiButton-label").click()

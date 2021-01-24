@@ -21,12 +21,12 @@ $ . venv/bin/activate
 ## Install requirements dependencies
 
 ```
-$ pip install requirements.txt -r
+$ pip install -r requirements.txt
 ```
 
 # Start the test
 
-Check if the web application is running at `http://localhost:3000/`
+Check if the web application is running at `https://localhost:3000/`
 
 ```
 $ pytest test_defaultSuite.py
