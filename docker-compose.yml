@@ -1,0 +1,16 @@
+version: "3"
+services:
+  web:
+    build: "./web"
+    image: inatel/web-react:latest
+    container_name: react-inatel
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    expose:
+      - "3000"
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true

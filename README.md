@@ -1,6 +1,6 @@
 # Star Wars Portal
 
-![enter image description here](https://img.shields.io/badge/version-v0.3.0-blue) 
+![enter image description here](https://img.shields.io/badge/version-v0.4.0-blue) 
 
 ![enter image description here](https://img.shields.io/badge/build-passing-brightgreen) ![enter image description here](https://img.shields.io/badge/docs-100%25-brightgreen) ![enter image description here](https://img.shields.io/badge/license-Apache2.0-brightgreen) 
 
@@ -15,6 +15,14 @@ The application to see information about the Star Wars Universe.
 # Starting the project
 
 To start web application on your local computer, check the startup ``./web/README.md`` instructions in the web folder.
+
+If you prefer, you can use Docker to start the application.
+
+Make sure you have Docker Compose installed and don't have any applications running on port 3000, then:
+
+```
+docker-compose up -d
+```
 
 # Starting the test
 
