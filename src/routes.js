@@ -42,6 +42,11 @@ const routes = [
     component: DashboardLayout,
     routes: [
       {
+        path: '/specie/:id/:tab',
+        exact: true,
+        component: lazy(()=> import('views/Specie'))
+      },
+      {
         path: '/planet/:id/:tab',
         exact: true,
         component: lazy(()=> import('views/Planet'))
