@@ -1,0 +1,67 @@
+{
+  "name": "starwarsportal",
+  "author": "Allan de Miranda Silva",
+  "email": "contact@devias.io",
+  "licence": "Apache2.0",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@date-io/core": "^2.10.6",
+    "@date-io/moment": "^2.10.6",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/pickers": "^3.2.10",
+    "@material-ui/styles": "^4.11.3",
+    "axios": "^0.21.1",
+    "chart.js": "^2.9.4",
+    "clsx": "^1.1.1",
+    "history": "^4.7.2",
+    "moment": "^2.29.1",
+    "node-sass": "^4.0.0",
+    "prismjs": "^1.23.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.1",
+    "react-chartjs-2": "^2.11.1",
+    "react-dom": "^17.0.1",
+    "react-helmet": "^6.1.0",
+    "react-perfect-scrollbar": "^1.5.8",
+    "react-router": "^5.2.0",
+    "react-router-config": "^5.1.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
+    "run-script": "^0.1.1",
+    "validate.js": "^0.13.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.18.0",
+    "eslint-plugin-react": "^7.22.0",
+    "typescript": "^4.1.3",
+    "babel-eslint": "^10.1.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react-hooks": "^4.2.0"
+  }
+}
