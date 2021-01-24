@@ -1,6 +1,6 @@
 # Star Wars Portal
 
-![enter image description here](https://img.shields.io/badge/version-v0.4.0-blue) 
+![enter image description here](https://img.shields.io/badge/version-v1.0.0-blue) 
 
 ![enter image description here](https://img.shields.io/badge/build-passing-brightgreen) ![enter image description here](https://img.shields.io/badge/docs-100%25-brightgreen) ![enter image description here](https://img.shields.io/badge/license-Apache2.0-brightgreen) 
 
