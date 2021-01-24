@@ -12,7 +12,7 @@ import {
   TableRow,
   TableCell
 } from '@material-ui/core';
-import { GenericMoreButton } from 'components';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(theme => ({
@@ -53,7 +53,7 @@ const FilmInfo = props => {
           className={clsx(classes.root, className)}
         >
           <CardHeader 
-            action={<GenericMoreButton />}
+            
             title="Vehicle info" 
           />
           <Divider />

@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import useRouter from 'utils/useRouter';
 import axios from 'utils/axios';
-import { GenericMoreButton, Alert } from 'components';
+import { Alert } from 'components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
@@ -105,7 +105,7 @@ const Starships = props => {
       {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
       <Card>
         <CardHeader
-          action={<GenericMoreButton />}
+          
           title={title}
         />
         <Divider />

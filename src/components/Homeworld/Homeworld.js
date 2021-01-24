@@ -13,7 +13,7 @@ import {
   TableRow
 } from '@material-ui/core';
 import axios from 'utils/axios';
-import { GenericMoreButton, Alert } from 'components';
+import { Alert } from 'components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import useRouter from 'utils/useRouter';
 
@@ -78,7 +78,7 @@ const Homeworld = props => {
       {progress ? <CircularProgress/> : !alertAxios.status &&
       <Card>
         <CardHeader
-          action={<GenericMoreButton />}
+          
           title={title}
         />
         <Divider />

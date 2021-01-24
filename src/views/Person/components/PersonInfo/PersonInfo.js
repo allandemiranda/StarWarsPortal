@@ -13,7 +13,7 @@ import {
   TableCell
 } from '@material-ui/core';
 import axios from 'utils/axios';
-import { GenericMoreButton } from 'components';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(theme => ({
@@ -69,7 +69,7 @@ const PersonInfo = props => {
           className={clsx(classes.root, className)}
         >
           <CardHeader 
-            action={<GenericMoreButton />}
+            
             title="Person info"       
           />
           <Divider />

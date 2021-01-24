@@ -7,7 +7,6 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardHeader,
   Divider,
   Table,
   TableBody,
@@ -16,7 +15,7 @@ import {
   TablePagination,
   TableRow
 } from '@material-ui/core';
-import { GenericMoreButton, Alert } from 'components';
+import { Alert } from 'components';
 import axios from 'utils/axios';
 import useRouter from 'utils/useRouter';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -113,10 +112,6 @@ const Results = props => {
 
       {progress ? <CircularProgress/> : !alertNull && !alertAxios.status &&
       <Card>
-        <CardHeader
-          action={<GenericMoreButton />}
-          title=""
-        />
         <Divider />
         <CardContent className={classes.content}>
           <PerfectScrollbar>
