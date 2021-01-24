@@ -1,3 +1,9 @@
+/**
+ * @description Starships List
+ * 
+ * @author Allan de Miranda
+ */
+
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Page, Header } from 'components';

@@ -8,6 +8,13 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
+/**
+ * Summary information grid
+ * 
+ * @param {Object} component Component info to grid
+ * 
+ * @author Allan de Miranda
+ */
 const Summary = props => {
   const { className, component, ...rest } = props;
 
@@ -34,7 +41,13 @@ const Summary = props => {
 };
 
 Summary.propTypes = {
+  /**
+   * Class component
+   */
   className: PropTypes.string,
+  /**
+   * Component to grid
+   */
   component: PropTypes.object.isRequired
 };
 

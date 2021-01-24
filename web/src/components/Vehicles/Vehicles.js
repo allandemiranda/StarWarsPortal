@@ -26,6 +26,14 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/**
+ * A Vehicle resource is a single transport craft that does not have hyperdrive capability
+ * 
+ * @param {Array} data A list of vehicle url
+ * @param {String} title The list title
+ * 
+ * @author Allan de Miranda
+ */
 const Vehicles = props => {
   const { className, data, title, ...rest } = props;
 
@@ -146,8 +154,17 @@ const Vehicles = props => {
 };
 
 Vehicles.propTypes = {
+  /**
+   * Class component
+   */
   className: PropTypes.string,
+  /**
+   * A list of person url
+   */
   data: PropTypes.any.isRequired,
+  /**
+   * The list title
+   */
   title: PropTypes.string.isRequired
 };
 

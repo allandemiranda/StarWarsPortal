@@ -8,6 +8,14 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
+/**
+ * Page information header
+ * 
+ * @param {String} subTitle The header sub title
+ * @param {String} title The header title
+ * 
+ * @author Allan de Miranda
+ */
 const Header = props => {
   const { className, subTitle, title, ...rest } = props;
 
@@ -45,8 +53,17 @@ const Header = props => {
 };
 
 Header.propTypes = {
+  /**
+   * Class component
+   */
   className: PropTypes.string,
+  /**
+   * The header sub title
+   */
   subTitle: PropTypes.string.isRequired,
+  /**
+   * The header title
+   */
   title: PropTypes.string.isRequired  
 };
 

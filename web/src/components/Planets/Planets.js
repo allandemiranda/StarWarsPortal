@@ -26,6 +26,14 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/**
+ * A Planet resource is a large mass, planet or planetoid in the Star Wars Universe, at the time of 0 ABY
+ * 
+ * @param {Array} data A list of planet url
+ * @param {String} title The list title
+ * 
+ * @author Allan de Miranda
+ */
 const Planets = props => {
   const { className, data, title, ...rest } = props;
 
@@ -146,8 +154,17 @@ const Planets = props => {
 };
 
 Planets.propTypes = {
+  /**
+   * Class component
+   */
   className: PropTypes.string,
+  /**
+   * A list of person url
+   */
   data: PropTypes.any.isRequired,
+  /**
+   * The list title
+   */
   title: PropTypes.string.isRequired
 };
 

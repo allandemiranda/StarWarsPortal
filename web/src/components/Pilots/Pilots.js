@@ -26,6 +26,14 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/**
+ * A People resource is an individual person or character within the Star Wars universe
+ * 
+ * @param {Array} data A list of person url
+ * @param {String} title The list title
+ * 
+ * @author Allan de Miranda
+ */
 const Pilots = props => {
   const { className, data, title, ...rest } = props;
 
@@ -146,8 +154,17 @@ const Pilots = props => {
 };
 
 Pilots.propTypes = {
+  /**
+   * Class component
+   */
   className: PropTypes.string,
+  /**
+   * A list of person url
+   */
   data: PropTypes.any.isRequired,
+  /**
+   * The list title
+   */
   title: PropTypes.string.isRequired
 };
 
