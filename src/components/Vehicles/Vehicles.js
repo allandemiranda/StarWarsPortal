@@ -41,18 +41,23 @@ const Vehicles = props => {
     let mounted = true;
 
     const fetchVehicles = async () => {
-      if(data.vehicles.length > 0){
-        const list_vehicles = await data.vehicles.map(async (url)=>{
-          const response = await axios.get(url.split('/api')[1])
-          return response
-        })
-        if (mounted) {
-          const results = await Promise.all(list_vehicles)
-          setVehicles(results);
-        }
-      } else {
+      if(!data.vehicles){
         setProgress(false);
-        setAlertNull(true);
+        setAlertAxios({status: true, msg: 'Server Error'})
+      } else {
+        if(data.vehicles.length > 0){
+          const list_vehicles = await data.vehicles.map(async (url)=>{
+            const response = await axios.get(url.split('/api')[1])
+            return response
+          })
+          if (mounted) {
+            const results = await Promise.all(list_vehicles)
+            setVehicles(results);
+          }
+        } else {
+          setProgress(false);
+          setAlertNull(true);
+        }
       }
     };
 

@@ -41,18 +41,23 @@ const People = props => {
     let mounted = true;
 
     const fetchPeople = async () => {
-      if(data.people.length > 0){
-        const list_people = await data.people.map(async (url)=>{
-          const response = await axios.get(url.split('/api')[1])
-          return response
-        })
-        if (mounted) {
-          const results = await Promise.all(list_people)
-          setPeople(results);
-        }
-      } else {
+      if(!data.people){
         setProgress(false);
-        setAlertNull(true);
+        setAlertAxios({status: true, msg: 'Server Error'})
+      } else {
+        if(data.people.length > 0){
+          const list_people = await data.people.map(async (url)=>{
+            const response = await axios.get(url.split('/api')[1])
+            return response
+          })
+          if (mounted) {
+            const results = await Promise.all(list_people)
+            setPeople(results);
+          }
+        } else {
+          setProgress(false);
+          setAlertNull(true);
+        }
       }
     };
 

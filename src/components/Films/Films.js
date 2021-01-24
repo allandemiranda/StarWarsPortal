@@ -41,18 +41,23 @@ const Films = props => {
     let mounted = true;
 
     const fetchFilms = async () => {
-      if(data.films.length > 0){
-        const list_films = await data.films.map(async (url)=>{
-          const response = await axios.get(url.split('/api')[1])
-          return response
-        })
-        if (mounted) {
-          const results = await Promise.all(list_films)
-          setFilms(results);
-        }
-      } else {
+      if(!data.films){
         setProgress(false);
-        setAlertNull(true);
+        setAlertAxios({status: true, msg: 'Server Error'})
+      } else {
+        if(data.films.length > 0){
+          const list_films = await data.films.map(async (url)=>{
+            const response = await axios.get(url.split('/api')[1])
+            return response
+          })
+          if (mounted) {
+            const results = await Promise.all(list_films)
+            setFilms(results);
+          }
+        } else {
+          setProgress(false);
+          setAlertNull(true);
+        }
       }
     };
 

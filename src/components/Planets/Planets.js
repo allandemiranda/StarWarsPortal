@@ -41,18 +41,23 @@ const Planets = props => {
     let mounted = true;
 
     const fetchPlanets = async () => {
-      if(data.planets.length > 0){
-        const list_planets = await data.planets.map(async (url)=>{
-          const response = await axios.get(url.split('/api')[1])
-          return response
-        })
-        if (mounted) {
-          const results = await Promise.all(list_planets)
-          setPlanets(results);
-        }
-      } else {
+      if(!data.planets){
         setProgress(false);
-        setAlertNull(true);
+        setAlertAxios({status: true, msg: 'Server Error'})
+      } else {
+        if(data.planets.length > 0){
+          const list_planets = await data.planets.map(async (url)=>{
+            const response = await axios.get(url.split('/api')[1])
+            return response
+          })
+          if (mounted) {
+            const results = await Promise.all(list_planets)
+            setPlanets(results);
+          }
+        } else {
+          setProgress(false);
+          setAlertNull(true);
+        }
       }
     };
 

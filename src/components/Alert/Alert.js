@@ -75,10 +75,9 @@ const Alert = forwardRef((props, ref) => {
       component={Typography}
       elevation={1}
       ref={ref}
-      variant="h6"
     >
       <span className={classes.icon}>{icon || icons[variant]}</span>
-      <div className={classes.message}>{message}</div>
+      {message}
       {onClose && (
         <IconButton
           className={classes.action}

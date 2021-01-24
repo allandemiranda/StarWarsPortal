@@ -41,18 +41,23 @@ const Starships = props => {
     let mounted = true;
 
     const fetchStarships = async () => {
-      if(data.starships.length > 0){
-        const list_starships = await data.starships.map(async (url)=>{
-          const response = await axios.get(url.split('/api')[1])
-          return response
-        })
-        if (mounted) {
-          const results = await Promise.all(list_starships)
-          setStarships(results);
-        }
-      } else {
+      if(!data.starships){
         setProgress(false);
-        setAlertNull(true);
+        setAlertAxios({status: true, msg: 'Server Error'})
+      } else {
+        if(data.starships.length > 0){
+          const list_starships = await data.starships.map(async (url)=>{
+            const response = await axios.get(url.split('/api')[1])
+            return response
+          })
+          if (mounted) {
+            const results = await Promise.all(list_starships)
+            setStarships(results);
+          }
+        } else {
+          setProgress(false);
+          setAlertNull(true);
+        }
       }
     };
 

@@ -41,18 +41,23 @@ const Species = props => {
     let mounted = true;
 
     const fetchSpecies = async () => {
-      if(data.species.length > 0){
-        const list_species = await data.species.map(async (url)=>{
-          const response = await axios.get(url.split('/api')[1])
-          return response
-        })
-        if (mounted) {
-          const results = await Promise.all(list_species)
-          setSpecies(results);
-        }
-      } else{
+      if(!data.species){
         setProgress(false);
-        setAlertNull(true);
+        setAlertAxios({status: true, msg: 'Server Error'})
+      } else {
+        if(data.species.length > 0){
+          const list_species = await data.species.map(async (url)=>{
+            const response = await axios.get(url.split('/api')[1])
+            return response
+          })
+          if (mounted) {
+            const results = await Promise.all(list_species)
+            setSpecies(results);
+          }
+        } else{
+          setProgress(false);
+          setAlertNull(true);
+        }
       }
     };
 

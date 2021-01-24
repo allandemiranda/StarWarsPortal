@@ -15,6 +15,7 @@ import {
 import axios from 'utils/axios';
 import { GenericMoreButton, Alert } from 'components';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import useRouter from 'utils/useRouter';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -26,7 +27,9 @@ const useStyles = makeStyles(() => ({
 const Homeworld = props => {
   const { className, data, title, ...rest } = props;
 
+  const { history } = useRouter();
   const classes = useStyles();
+
   const [homeworld, setHomeworld] = useState([]);
   const [progress, setProgress] = useState(true);
   const [alertAxios, setAlertAxios] = useState({status: false, msg: ''});
@@ -35,14 +38,21 @@ const Homeworld = props => {
     let mounted = true;
 
     const fetchHomeworld = async () => {  
-      const response = await axios.get(data.homeworld.split('/api')[1])
-      if (mounted) {
-        const results = await Promise.all([response]);
-        if(results[0].status === 200){
+      if(!data.homeworld){
+        setProgress(false);
+        setAlertAxios({status: true, msg: 'Server Error'})
+      } else {
+        const response = await axios.get(data.homeworld.split('/api')[1]).catch((err)=>{
           setProgress(false);
-          setHomeworld(results[0].data);
-        } else {
-          setAlertAxios({status: true, msg: '???'})
+          setAlertAxios({status: true, msg: err.message});
+          mounted = false;
+        })
+        if (mounted) {
+          const results = await Promise.all([response]);
+          setProgress(false);
+          if(results[0].status === 200){            
+            setHomeworld(results[0].data);
+          }
         }
       }
     };
@@ -76,7 +86,7 @@ const Homeworld = props => {
           <Table>
             <TableBody>            
               <TableRow
-                onClick={() => history.push('/homeworld' + homeworld.url.split('planets')[1] + 'summary')}
+                onClick={() => history.push('/planet' + homeworld.url.split('planets')[1] + 'summary')}
                 selected
                 style={{cursor: 'pointer'}}
               >
